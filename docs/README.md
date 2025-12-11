@@ -1,6 +1,6 @@
 # Documentation
 
-Welcome to the Claude Content Skills documentation.
+Welcome to the Claude Content Skills documentation for WordPress/WooCommerce.
 
 ## Quick Navigation
 
@@ -10,13 +10,8 @@ Welcome to the Claude Content Skills documentation.
 - [Troubleshooting](integration/TROUBLESHOOTING.md) - Common issues and solutions
 
 ### Skills Documentation
-- [SEO WordPress Manager](skills/SEO_WORDPRESS_MANAGER.md) - Batch Yoast SEO updates
-- [Astro CTA Injector](skills/ASTRO_CTA_INJECTOR.md) - Intelligent CTA placement
+- [SEO WordPress Manager](skills/SEO_WORDPRESS_MANAGER.md) - Batch Rank Math SEO updates for posts and WooCommerce products
 - [Link Analyzer](skills/LINK_ANALYZER.md) - Comprehensive link analysis
-
-### Philosophy & Design
-- [Why These Skills](philosophy/WHY_THESE_SKILLS.md) - The problems we're solving
-- [ADD Framework Integration](philosophy/ADD_FRAMEWORK.md) - How cognitive alignment shaped development
 
 ---
 
@@ -60,18 +55,32 @@ Detailed instructions for Claude when this skill is active...
 
 ---
 
+## WordPress/WooCommerce Focus
+
+These skills are designed for WordPress/WooCommerce sites with:
+- **Rank Math SEO** plugin
+- **WPGraphQL** for API access
+- Compatible with **Shoptimizer theme** and **CommerceKit**
+
+### Key Capabilities
+
+| Skill | Capability |
+|-------|------------|
+| SEO WordPress Manager | Batch update SEO titles, descriptions, focus keywords for posts and products |
+| Link Analyzer | Find broken links, orphan pages, internal linking issues |
+
+---
+
 ## Development Philosophy
 
-These skills were developed with the [Assess-Decide-Do (ADD) Framework](https://github.com/dragosroua/claude-assess-decide-do-mega-prompt), which influenced several design decisions:
-
 ### Assessment-First Design
-Each skill includes preview/dry-run modes because the ADD framework emphasizes thorough assessment before action. You always see what will happen before it happens.
+Each skill includes preview/dry-run modes. You always see what will happen before it happens.
 
 ### Clear Decision Points
-Skills present explicit choices (batch size, thresholds, placement strategies) rather than making assumptions. This respects the user's decision-making authority.
+Skills present explicit choices (batch size, thresholds) rather than making assumptions.
 
 ### Execution Safety
-Once in "Do" mode, skills include progress tracking, backups, and resume capability. Completing tasks matters, and interruptions shouldn't mean starting over.
+Skills include progress tracking, backups, and resume capability. Interruptions don't mean starting over.
 
 ---
 
@@ -82,10 +91,3 @@ Documentation improvements are always welcome. When contributing:
 1. Match the existing tone (direct, practical, no fluff)
 2. Include real examples where possible
 3. Document edge cases you discover
-4. Keep the ADD framework principles in mind
-
----
-
-<p align="center">
-  <sub>Part of <a href="https://github.com/dragosroua/claude-content-skills">Claude Content Skills</a></sub>
-</p>

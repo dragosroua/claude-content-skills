@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Yoast SEO Batch Updater
+Rank Math SEO Batch Updater
 Applies SEO changes to WordPress posts via GraphQL with progress tracking
 """
 
@@ -20,8 +20,8 @@ from utils import ProgressTracker, save_json, load_json, ensure_dir, timestamp
 from wp_graphql_client import WPGraphQLClient, load_credentials_from_config
 
 
-class YoastBatchUpdater:
-    """Batch update Yoast SEO fields with progress tracking"""
+class RankMathBatchUpdater:
+    """Batch update Rank Math SEO fields with progress tracking"""
 
     def __init__(
         self,
@@ -220,7 +220,7 @@ class YoastBatchUpdater:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Yoast SEO Batch Updater")
+    parser = argparse.ArgumentParser(description="Rank Math SEO Batch Updater")
     parser.add_argument("--input", "-i", help="Path to changes JSON file")
     parser.add_argument("--resume", action="store_true", help="Resume interrupted batch")
     parser.add_argument("--dry-run", action="store_true", default=True,
@@ -272,7 +272,7 @@ def main():
 
     client = WPGraphQLClient(credentials)
 
-    updater = YoastBatchUpdater(
+    updater = RankMathBatchUpdater(
         client=client,
         state_file=state_file,
         backup_file=backup_file,

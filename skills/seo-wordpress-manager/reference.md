@@ -1,34 +1,50 @@
 # SEO WordPress Manager - Reference Guide
 
-## Yoast SEO Fields
+## Rank Math SEO Fields
 
-### Primary Fields (Most Common)
+### WordPress Post Meta Keys (Database)
 | Field | Meta Key | Max Length | Description |
 |-------|----------|------------|-------------|
-| SEO Title | `_yoast_wpseo_title` | 60 chars | Title shown in search results |
-| Meta Description | `_yoast_wpseo_metadesc` | 160 chars | Description in search results |
-| Focus Keyphrase | `_yoast_wpseo_focuskw` | N/A | Primary keyword to optimize for |
+| SEO Title | `rank_math_title` | 60 chars | Title shown in search results |
+| Meta Description | `rank_math_description` | 160 chars | Description in search results |
+| Focus Keyword | `rank_math_focus_keyword` | N/A | Primary keyword to optimize for |
+| Canonical URL | `rank_math_canonical_url` | N/A | Preferred URL for this content |
+| Robots | `rank_math_robots` | N/A | Array of robots directives (noindex, nofollow) |
 
-### Secondary Fields
-| Field | Meta Key | Description |
-|-------|----------|-------------|
-| Canonical URL | `_yoast_wpseo_canonical` | Preferred URL for this content |
-| No Index | `_yoast_wpseo_meta-robots-noindex` | Prevent indexing (1 = noindex) |
-| No Follow | `_yoast_wpseo_meta-robots-nofollow` | Prevent link following |
+### WPGraphQL Rank Math Fields
+| GraphQL Field | Type | Description |
+|---------------|------|-------------|
+| `title` | String | SEO title |
+| `description` | String | Meta description |
+| `focusKeywords` | String/Array | Focus keyword(s) |
+| `canonicalUrl` | String | Canonical URL |
+| `robots` | Array | Robot directives |
+| `breadcrumbTitle` | String | Breadcrumb text |
+| `seoScore` | Object | SEO score with `score` and `rating` |
+| `openGraph` | Object | Open Graph data |
 
 ### Open Graph Fields
 | Field | Meta Key | Description |
 |-------|----------|-------------|
-| OG Title | `_yoast_wpseo_opengraph-title` | Facebook/social title |
-| OG Description | `_yoast_wpseo_opengraph-description` | Facebook/social description |
-| OG Image | `_yoast_wpseo_opengraph-image` | Social sharing image URL |
+| OG Title | `rank_math_facebook_title` | Facebook/social title |
+| OG Description | `rank_math_facebook_description` | Facebook/social description |
+| OG Image | `rank_math_facebook_image` | Social sharing image URL |
+| OG Image ID | `rank_math_facebook_image_id` | Attachment ID for OG image |
 
 ### Twitter Fields
 | Field | Meta Key | Description |
 |-------|----------|-------------|
-| Twitter Title | `_yoast_wpseo_twitter-title` | Twitter card title |
-| Twitter Description | `_yoast_wpseo_twitter-description` | Twitter card description |
-| Twitter Image | `_yoast_wpseo_twitter-image` | Twitter card image URL |
+| Twitter Use Facebook | `rank_math_twitter_use_facebook` | Use Facebook OG data for Twitter |
+| Twitter Card Type | `rank_math_twitter_card_type` | summary, summary_large_image, etc. |
+| Twitter Title | `rank_math_twitter_title` | Twitter card title |
+| Twitter Description | `rank_math_twitter_description` | Twitter card description |
+| Twitter Image | `rank_math_twitter_image` | Twitter card image URL |
+
+### Schema Fields
+| Field | Meta Key | Description |
+|-------|----------|-------------|
+| Schema Type | `rank_math_rich_snippet` | Schema.org type (article, product, etc.) |
+| Schema Data | `rank_math_schema_*` | Various schema-specific fields |
 
 ## GraphQL Queries
 
@@ -47,13 +63,55 @@ query GetPostsWithSEO($first: Int!, $after: String) {
       uri
       seo {
         title
-        metaDesc
-        focuskw
-        canonical
-        opengraphTitle
-        opengraphDescription
-        opengraphImage {
-          sourceUrl
+        description
+        focusKeywords
+        canonicalUrl
+        robots
+        breadcrumbTitle
+        openGraph {
+          title
+          description
+        }
+        seoScore {
+          score
+          rating
+        }
+      }
+    }
+  }
+}
+```
+
+### Fetch WooCommerce Products with SEO Data
+```graphql
+query GetProductsWithSEO($first: Int!, $after: String) {
+  products(first: $first, after: $after, where: {status: "publish"}) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    nodes {
+      databaseId
+      name
+      slug
+      uri
+      ... on SimpleProduct {
+        price
+        regularPrice
+      }
+      ... on VariableProduct {
+        price
+        regularPrice
+      }
+      seo {
+        title
+        description
+        focusKeywords
+        canonicalUrl
+        robots
+        seoScore {
+          score
+          rating
         }
       }
     }
@@ -70,22 +128,22 @@ query GetPostsByCategory($categorySlug: String!, $first: Int!) {
       title
       seo {
         title
-        metaDesc
-        focuskw
+        description
+        focusKeywords
       }
     }
   }
 }
 ```
 
-### Update SEO Mutation
+### Update SEO Mutation (Custom - requires functions.php)
 ```graphql
-mutation UpdatePostSEO($postId: Int!, $title: String, $metaDesc: String, $focusKeyphrase: String) {
+mutation UpdatePostSEO($postId: Int!, $title: String, $description: String, $focusKeyword: String) {
   updatePostSeo(input: {
     postId: $postId
     title: $title
-    metaDesc: $metaDesc
-    focusKeyphrase: $focusKeyphrase
+    description: $description
+    focusKeyword: $focusKeyword
   }) {
     success
     post {
@@ -106,30 +164,22 @@ mutation UpdatePostSEO($postId: Int!, $title: String, $metaDesc: String, $focusK
 
 ### Meta Description Optimization
 - **Length**: 150-160 characters (Google truncates at ~160)
-- **Include CTA**: Use action words like "Learn", "Discover", "Get"
+- **Include CTA**: Use action words like "Learn", "Discover", "Get", "Shop"
 - **Include keyword**: Natural placement of focus keyphrase
 - **Unique**: Each page needs a unique description
 - **Compelling**: Think of it as ad copy
 
-### Focus Keyphrase Guidelines
-- **One primary keyword** per post
+### Focus Keyword Guidelines
+- **One primary keyword** per post/product
 - **Long-tail** keywords often perform better
 - **Search intent** alignment is crucial
 - **Natural density**: Don't keyword stuff
 
-## Common Issues & Solutions
-
-### Issue: Titles Too Long
-**Solution**: Use the `truncate_title()` function to intelligently shorten titles while preserving meaning.
-
-### Issue: Duplicate Meta Descriptions
-**Solution**: Run the analyzer to identify duplicates, then generate unique descriptions based on post content.
-
-### Issue: Missing Focus Keyphrases
-**Solution**: Analyze post content and titles to suggest relevant keyphrases.
-
-### Issue: Generic Descriptions
-**Solution**: Replace default/template descriptions with content-specific ones.
+### WooCommerce Product SEO
+- Include product attributes in title (size, color, brand)
+- Add pricing/value proposition in description
+- Use product-specific schema markup
+- Optimize category pages separately
 
 ## WordPress Application Password Setup
 
@@ -139,6 +189,15 @@ mutation UpdatePostSEO($postId: Int!, $title: String, $metaDesc: String, $focusK
 4. Click **Add New Application Password**
 5. Copy the generated password (shown once!)
 6. Use format: `username:password` for basic auth
+
+## Required WordPress Plugins
+
+| Plugin | Purpose | Required |
+|--------|---------|----------|
+| WPGraphQL | GraphQL API for WordPress | Yes |
+| Rank Math SEO | SEO plugin | Yes |
+| WPGraphQL for Rank Math | GraphQL + Rank Math integration | Yes |
+| WPGraphQL WooCommerce | GraphQL + WooCommerce integration | For products |
 
 ## Rate Limiting Recommendations
 
@@ -156,3 +215,19 @@ mutation UpdatePostSEO($postId: Int!, $title: String, $metaDesc: String, $focusK
 | 403 | Forbidden | Check user permissions |
 | 429 | Rate Limited | Increase delay between requests |
 | 500 | Server Error | Check WPGraphQL logs |
+
+## Rank Math vs Yoast Field Mapping
+
+If migrating from Yoast SEO, here's the field mapping:
+
+| Yoast Field | Rank Math Field |
+|-------------|-----------------|
+| `_yoast_wpseo_title` | `rank_math_title` |
+| `_yoast_wpseo_metadesc` | `rank_math_description` |
+| `_yoast_wpseo_focuskw` | `rank_math_focus_keyword` |
+| `_yoast_wpseo_canonical` | `rank_math_canonical_url` |
+| `_yoast_wpseo_opengraph-title` | `rank_math_facebook_title` |
+| `_yoast_wpseo_opengraph-description` | `rank_math_facebook_description` |
+| `_yoast_wpseo_opengraph-image` | `rank_math_facebook_image` |
+| `_yoast_wpseo_twitter-title` | `rank_math_twitter_title` |
+| `_yoast_wpseo_twitter-description` | `rank_math_twitter_description` |
