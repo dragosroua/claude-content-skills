@@ -1,34 +1,43 @@
 # SEO WordPress Manager - Reference Guide
 
-## Yoast SEO Fields
+## Rank Math SEO Fields
 
 ### Primary Fields (Most Common)
 | Field | Meta Key | Max Length | Description |
 |-------|----------|------------|-------------|
-| SEO Title | `_yoast_wpseo_title` | 60 chars | Title shown in search results |
-| Meta Description | `_yoast_wpseo_metadesc` | 160 chars | Description in search results |
-| Focus Keyphrase | `_yoast_wpseo_focuskw` | N/A | Primary keyword to optimize for |
+| SEO Title | `rank_math_title` | 60 chars | Title shown in search results |
+| Meta Description | `rank_math_description` | 160 chars | Description in search results |
+| Focus Keyword | `rank_math_focus_keyword` | N/A | Primary keyword to optimize for |
 
 ### Secondary Fields
 | Field | Meta Key | Description |
 |-------|----------|-------------|
-| Canonical URL | `_yoast_wpseo_canonical` | Preferred URL for this content |
-| No Index | `_yoast_wpseo_meta-robots-noindex` | Prevent indexing (1 = noindex) |
-| No Follow | `_yoast_wpseo_meta-robots-nofollow` | Prevent link following |
+| Canonical URL | `rank_math_canonical_url` | Preferred URL for this content |
+| Robots | `rank_math_robots` | Array of robots directives (noindex, nofollow, etc.) |
+| Advanced Robots | `rank_math_advanced_robots` | Additional robots settings |
 
 ### Open Graph Fields
 | Field | Meta Key | Description |
 |-------|----------|-------------|
-| OG Title | `_yoast_wpseo_opengraph-title` | Facebook/social title |
-| OG Description | `_yoast_wpseo_opengraph-description` | Facebook/social description |
-| OG Image | `_yoast_wpseo_opengraph-image` | Social sharing image URL |
+| OG Title | `rank_math_facebook_title` | Facebook/social title |
+| OG Description | `rank_math_facebook_description` | Facebook/social description |
+| OG Image | `rank_math_facebook_image` | Social sharing image URL |
+| OG Image ID | `rank_math_facebook_image_id` | Attachment ID for OG image |
 
 ### Twitter Fields
 | Field | Meta Key | Description |
 |-------|----------|-------------|
-| Twitter Title | `_yoast_wpseo_twitter-title` | Twitter card title |
-| Twitter Description | `_yoast_wpseo_twitter-description` | Twitter card description |
-| Twitter Image | `_yoast_wpseo_twitter-image` | Twitter card image URL |
+| Twitter Use Facebook | `rank_math_twitter_use_facebook` | Use Facebook OG data for Twitter |
+| Twitter Card Type | `rank_math_twitter_card_type` | summary, summary_large_image, etc. |
+| Twitter Title | `rank_math_twitter_title` | Twitter card title |
+| Twitter Description | `rank_math_twitter_description` | Twitter card description |
+| Twitter Image | `rank_math_twitter_image` | Twitter card image URL |
+
+### Schema Fields
+| Field | Meta Key | Description |
+|-------|----------|-------------|
+| Schema Type | `rank_math_rich_snippet` | Schema.org type (article, product, etc.) |
+| Schema Data | `rank_math_schema_*` | Various schema-specific fields |
 
 ## GraphQL Queries
 
@@ -47,13 +56,15 @@ query GetPostsWithSEO($first: Int!, $after: String) {
       uri
       seo {
         title
-        metaDesc
-        focuskw
-        canonical
-        opengraphTitle
-        opengraphDescription
-        opengraphImage {
-          sourceUrl
+        description
+        focusKw
+        canonicalUrl
+        openGraph {
+          title
+          description
+          image {
+            sourceUrl
+          }
         }
       }
     }
@@ -70,8 +81,8 @@ query GetPostsByCategory($categorySlug: String!, $first: Int!) {
       title
       seo {
         title
-        metaDesc
-        focuskw
+        description
+        focusKw
       }
     }
   }
@@ -80,12 +91,12 @@ query GetPostsByCategory($categorySlug: String!, $first: Int!) {
 
 ### Update SEO Mutation
 ```graphql
-mutation UpdatePostSEO($postId: Int!, $title: String, $metaDesc: String, $focusKeyphrase: String) {
+mutation UpdatePostSEO($postId: Int!, $title: String, $description: String, $focusKeyword: String) {
   updatePostSeo(input: {
     postId: $postId
     title: $title
-    metaDesc: $metaDesc
-    focusKeyphrase: $focusKeyphrase
+    description: $description
+    focusKeyword: $focusKeyword
   }) {
     success
     post {
@@ -111,7 +122,7 @@ mutation UpdatePostSEO($postId: Int!, $title: String, $metaDesc: String, $focusK
 - **Unique**: Each page needs a unique description
 - **Compelling**: Think of it as ad copy
 
-### Focus Keyphrase Guidelines
+### Focus Keyword Guidelines
 - **One primary keyword** per post
 - **Long-tail** keywords often perform better
 - **Search intent** alignment is crucial
@@ -125,7 +136,7 @@ mutation UpdatePostSEO($postId: Int!, $title: String, $metaDesc: String, $focusK
 ### Issue: Duplicate Meta Descriptions
 **Solution**: Run the analyzer to identify duplicates, then generate unique descriptions based on post content.
 
-### Issue: Missing Focus Keyphrases
+### Issue: Missing Focus Keywords
 **Solution**: Analyze post content and titles to suggest relevant keyphrases.
 
 ### Issue: Generic Descriptions
@@ -156,3 +167,19 @@ mutation UpdatePostSEO($postId: Int!, $title: String, $metaDesc: String, $focusK
 | 403 | Forbidden | Check user permissions |
 | 429 | Rate Limited | Increase delay between requests |
 | 500 | Server Error | Check WPGraphQL logs |
+
+## Rank Math vs Yoast Field Mapping
+
+If migrating from Yoast SEO, here's the field mapping:
+
+| Yoast Field | Rank Math Field |
+|-------------|-----------------|
+| `_yoast_wpseo_title` | `rank_math_title` |
+| `_yoast_wpseo_metadesc` | `rank_math_description` |
+| `_yoast_wpseo_focuskw` | `rank_math_focus_keyword` |
+| `_yoast_wpseo_canonical` | `rank_math_canonical_url` |
+| `_yoast_wpseo_opengraph-title` | `rank_math_facebook_title` |
+| `_yoast_wpseo_opengraph-description` | `rank_math_facebook_description` |
+| `_yoast_wpseo_opengraph-image` | `rank_math_facebook_image` |
+| `_yoast_wpseo_twitter-title` | `rank_math_twitter_title` |
+| `_yoast_wpseo_twitter-description` | `rank_math_twitter_description` |

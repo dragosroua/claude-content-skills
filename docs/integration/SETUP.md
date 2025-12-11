@@ -112,11 +112,11 @@ Claude should recognize and describe the skills.
    - Search "WPGraphQL"
    - Install and Activate
 
-2. **Yoast SEO** (if not already installed)
-   - Search "Yoast SEO"
+2. **Rank Math SEO** (if not already installed)
+   - Search "Rank Math SEO"
    - Install and Activate
 
-3. **WPGraphQL for Yoast SEO**
+3. **WPGraphQL for Rank Math SEO**
    - Download from GitHub or WordPress plugin repository
    - Upload and Activate
 
@@ -130,8 +130,8 @@ add_action('graphql_register_types', function() {
         'inputFields' => [
             'postId' => ['type' => 'Int'],
             'title' => ['type' => 'String'],
-            'metaDesc' => ['type' => 'String'],
-            'focusKeyphrase' => ['type' => 'String'],
+            'description' => ['type' => 'String'],
+            'focusKeyword' => ['type' => 'String'],
         ],
         'outputFields' => [
             'success' => ['type' => 'Boolean'],
@@ -145,16 +145,16 @@ add_action('graphql_register_types', function() {
             }
 
             if (isset($input['title'])) {
-                update_post_meta($post_id, '_yoast_wpseo_title',
+                update_post_meta($post_id, 'rank_math_title',
                     sanitize_text_field($input['title']));
             }
-            if (isset($input['metaDesc'])) {
-                update_post_meta($post_id, '_yoast_wpseo_metadesc',
-                    sanitize_textarea_field($input['metaDesc']));
+            if (isset($input['description'])) {
+                update_post_meta($post_id, 'rank_math_description',
+                    sanitize_textarea_field($input['description']));
             }
-            if (isset($input['focusKeyphrase'])) {
-                update_post_meta($post_id, '_yoast_wpseo_focuskw',
-                    sanitize_text_field($input['focusKeyphrase']));
+            if (isset($input['focusKeyword'])) {
+                update_post_meta($post_id, 'rank_math_focus_keyword',
+                    sanitize_text_field($input['focusKeyword']));
             }
 
             return ['success' => true, 'post' => get_post($post_id)];

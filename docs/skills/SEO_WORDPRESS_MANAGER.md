@@ -1,6 +1,6 @@
 # SEO WordPress Manager
 
-Batch update Yoast SEO metadata via WordPress GraphQL API.
+Batch update Rank Math SEO metadata via WordPress GraphQL API.
 
 ## Overview
 
@@ -19,14 +19,14 @@ This skill connects to your WordPress site via WPGraphQL and enables batch updat
    Plugins → Add New → Search "WPGraphQL" → Install & Activate
    ```
 
-2. **Install Yoast SEO** (if not already installed)
+2. **Install Rank Math SEO** (if not already installed)
    ```
-   Plugins → Add New → Search "Yoast SEO" → Install & Activate
+   Plugins → Add New → Search "Rank Math SEO" → Install & Activate
    ```
 
-3. **Install WPGraphQL for Yoast SEO**
-   - Download from: https://github.com/developer-developer/wpgraphql-yoast-seo
-   - Or search "WPGraphQL Yoast SEO" in plugins
+3. **Install WPGraphQL for Rank Math SEO**
+   - Download from: https://github.com/developer-developer/wpgraphql-rank-math
+   - Or search "WPGraphQL Rank Math" in plugins
 
 4. **Enable Mutations** (add to `functions.php`):
    ```php
@@ -107,13 +107,13 @@ python scripts/analyze_seo.py --all --check-keyphrase --output analysis.json
 python scripts/preview_changes.py --input changes.json --validate
 
 # Apply changes (dry-run by default)
-python scripts/yoast_batch_updater.py --input changes.json
+python scripts/rankmath_batch_updater.py --input changes.json
 
 # Apply changes for real
-python scripts/yoast_batch_updater.py --input changes.json --apply
+python scripts/rankmath_batch_updater.py --input changes.json --apply
 
 # Resume interrupted batch
-python scripts/yoast_batch_updater.py --resume
+python scripts/rankmath_batch_updater.py --resume
 ```
 
 ### The Workflow
@@ -139,7 +139,7 @@ python scripts/yoast_batch_updater.py --resume
                              ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │  4. APPLY                                                        │
-│     yoast_batch_updater.py --apply → WordPress                  │
+│     rankmath_batch_updater.py --apply → WordPress               │
 │     (batch updates with progress tracking)                      │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -219,5 +219,5 @@ The batch updater expects a JSON file with this structure:
 ## Related Files
 
 - `skills/seo-wordpress-manager/SKILL.md` - Skill definition
-- `skills/seo-wordpress-manager/reference.md` - Yoast fields reference
+- `skills/seo-wordpress-manager/reference.md` - Rank Math fields reference
 - `skills/seo-wordpress-manager/config.example.json` - Config template

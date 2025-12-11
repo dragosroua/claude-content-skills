@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 WordPress GraphQL Client for SEO operations
-Handles authentication and API communication
+Handles authentication and API communication with Rank Math SEO
 """
 
 import os
@@ -74,7 +74,7 @@ class WPGraphQLClient:
         after: Optional[str] = None,
         category: Optional[str] = None
     ) -> dict[str, Any]:
-        """Fetch posts with their SEO metadata"""
+        """Fetch posts with their SEO metadata from Rank Math"""
 
         if category:
             query = """
@@ -93,11 +93,13 @@ class WPGraphQLClient:
                         modified
                         seo {
                             title
-                            metaDesc
-                            focuskw
-                            canonical
-                            opengraphTitle
-                            opengraphDescription
+                            description
+                            focusKw
+                            canonicalUrl
+                            openGraph {
+                                title
+                                description
+                            }
                         }
                     }
                 }
@@ -121,11 +123,13 @@ class WPGraphQLClient:
                         modified
                         seo {
                             title
-                            metaDesc
-                            focuskw
-                            canonical
-                            opengraphTitle
-                            opengraphDescription
+                            description
+                            focusKw
+                            canonicalUrl
+                            openGraph {
+                                title
+                                description
+                            }
                         }
                     }
                 }
@@ -163,15 +167,15 @@ class WPGraphQLClient:
         meta_desc: Optional[str] = None,
         focus_keyphrase: Optional[str] = None
     ) -> dict[str, Any]:
-        """Update SEO fields for a post"""
+        """Update Rank Math SEO fields for a post"""
 
         mutation = """
-        mutation UpdatePostSEO($postId: Int!, $title: String, $metaDesc: String, $focusKeyphrase: String) {
+        mutation UpdatePostSEO($postId: Int!, $title: String, $description: String, $focusKeyword: String) {
             updatePostSeo(input: {
                 postId: $postId
                 title: $title
-                metaDesc: $metaDesc
-                focusKeyphrase: $focusKeyphrase
+                description: $description
+                focusKeyword: $focusKeyword
             }) {
                 success
                 post {
@@ -186,9 +190,9 @@ class WPGraphQLClient:
         if title is not None:
             variables["title"] = title
         if meta_desc is not None:
-            variables["metaDesc"] = meta_desc
+            variables["description"] = meta_desc
         if focus_keyphrase is not None:
-            variables["focusKeyphrase"] = focus_keyphrase
+            variables["focusKeyword"] = focus_keyphrase
 
         return self.execute(mutation, variables)
 
@@ -205,7 +209,7 @@ def load_credentials_from_config(config_path: Optional[Path] = None) -> WPCreden
 
 
 def main():
-    parser = argparse.ArgumentParser(description="WordPress GraphQL Client for SEO")
+    parser = argparse.ArgumentParser(description="WordPress GraphQL Client for Rank Math SEO")
     parser.add_argument("--action", choices=["list", "get", "test"], default="list",
                         help="Action to perform")
     parser.add_argument("--limit", type=int, default=10, help="Number of posts to fetch")

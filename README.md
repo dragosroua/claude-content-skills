@@ -40,7 +40,7 @@ A collection of **three production-ready Claude Code skills** that automate / en
 
 | Skill | Purpose | Time Saved |
 |-------|---------|------------|
-| **SEO WordPress Manager** | Batch update Yoast SEO metadata via GraphQL | Hours per week |
+| **SEO WordPress Manager** | Batch update Rank Math SEO metadata via GraphQL | Hours per week |
 | **Astro CTA Injector** | Intelligently inject CTAs into static site content | Manual work eliminated |
 | **Link Analyzer** | Find broken links, orphan pages, and linking issues | Comprehensive site audits |
 
@@ -54,7 +54,7 @@ Claude Code skills are **model-invoked capabilities** - Claude automatically det
 You: "My WordPress posts have terrible meta descriptions, can you help optimize them?"
 
 Claude: [Automatically activates SEO WordPress Manager skill]
-        "I'll help you batch-update your Yoast SEO metadata. Let me first
+        "I'll help you batch-update your Rank Math SEO metadata. Let me first
         fetch your posts via GraphQL and show you a preview of the changes..."
 ```
 
@@ -95,7 +95,7 @@ Start Claude Code - the skills should now appear when relevant to your requests.
 
 ### 1. SEO WordPress Manager
 
-Batch update Yoast SEO fields (titles, meta descriptions, focus keyphrases) via WordPress GraphQL API.
+Batch update Rank Math SEO fields (titles, meta descriptions, focus keyphrases) via WordPress GraphQL API.
 
 **Key Features:**
 - Preview changes before applying (dry-run by default)
@@ -105,7 +105,7 @@ Batch update Yoast SEO fields (titles, meta descriptions, focus keyphrases) via 
 
 **Requirements:**
 - WordPress with WPGraphQL plugin
-- Yoast SEO + WPGraphQL Yoast extension
+- Rank Math SEO + WPGraphQL Rank Math extension
 - Application Password for authentication
 
 **Example Usage:**
@@ -200,7 +200,7 @@ claude-content-skills/
     │   └── scripts/
     │       ├── wp_graphql_client.py
     │       ├── preview_changes.py
-    │       └── yoast_batch_updater.py
+    │       └── rankmath_batch_updater.py
     │
     ├── astro-cta-injector/
     │   ├── SKILL.md
@@ -233,7 +233,7 @@ claude-content-skills/
 | Python | 3.10+ | For running analysis scripts |
 | Claude Code | Latest | CLI tool from Anthropic |
 | WordPress | 5.0+ | With WPGraphQL (for SEO skill) |
-| Yoast SEO | Latest | With GraphQL extension (for SEO skill) |
+| Rank Math SEO | Latest | With GraphQL extension (for SEO skill) |
 
 ## How Skills Work
 
