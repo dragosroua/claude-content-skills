@@ -5,67 +5,49 @@
 <h1 align="center">Claude Content Skills</h1>
 
 <p align="center">
-  <img src="assets/hero-claude-skills.webp" alt="Claude Content Skills" width="600" />
+  <strong>Production-ready skills for WordPress/WooCommerce SEO optimization and link management with Rank Math SEO</strong>
 </p>
 
 <p align="center">
-  <strong>Production-ready skills for dynamic content management, AI-assisted SEO optimization, and internal / external links management</strong>
-</p>
-
-<p align="center">
-  <a href="https://github.com/dragosroua/claude-content-skills/stargazers"><img src="https://img.shields.io/github/stars/dragosroua/claude-content-skills?style=social" alt="GitHub Stars" /></a>
-  <a href="https://github.com/sponsors/dragosroua"><img src="https://img.shields.io/badge/Sponsor-GitHub-ea4aaa?logo=github" alt="Sponsor" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License" /></a>
   <img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white" alt="Python 3.10+" />
+  <img src="https://img.shields.io/badge/WordPress-6.0+-21759B?logo=wordpress&logoColor=white" alt="WordPress 6.0+" />
+  <img src="https://img.shields.io/badge/WooCommerce-Compatible-96588A?logo=woocommerce&logoColor=white" alt="WooCommerce Compatible" />
 </p>
-
-<p align="center">
-  <a href="#-quick-start">Quick Start</a> |
-  <a href="#-skills-overview">Skills</a> |
-  <a href="docs/README.md">Documentation</a> |
-  <a href="https://dragosroua.com">Blog</a>
-</p>
-
----
-
-> **Built with ADD-Supercharged Claude**
->
-> These skills were developed using Claude Code enhanced with the [Assess-Decide-Do (ADD) Framework](https://github.com/dragosroua/claude-assess-decide-do-mega-prompt) - a human cognitive framework integration that creates more aligned, flow-aware AI interactions. The ADD framework taught Claude to recognize exploration vs. decision vs. execution phases, resulting in cleaner architecture, a more thoughtful implementation and significant token savings.
 
 ---
 
 ## What This Is
 
-A collection of **three production-ready Claude Code skills** that automate / enhance common content management tasks:
+A collection of **production-ready Claude Code skills** for WordPress/WooCommerce sites using Rank Math SEO:
 
 | Skill | Purpose | Time Saved |
 |-------|---------|------------|
 | **SEO WordPress Manager** | Batch update Rank Math SEO metadata via GraphQL | Hours per week |
-| **Astro CTA Injector** | Intelligently inject CTAs into static site content | Manual work eliminated |
 | **Link Analyzer** | Find broken links, orphan pages, and linking issues | Comprehensive site audits |
 
-These aren't toy examples. They emerged from real-world needs managing a 15+ years old, 1,300+ posts blog migration and optimization project.
+These skills are optimized for **WordPress + WooCommerce** sites running themes like **Shoptimizer** with **CommerceKit**.
 
 ## Why Skills Matter
 
-Claude Code skills are **model-invoked capabilities** - Claude automatically detects when to use them based on your conversation context. Unlike slash commands that require explicit invocation, skills let Claude seamlessly apply specialized knowledge when relevant.
+Claude Code skills are **model-invoked capabilities** - Claude automatically detects when to use them based on your conversation context.
 
 ```
-You: "My WordPress posts have terrible meta descriptions, can you help optimize them?"
+You: "My WooCommerce product descriptions have terrible meta descriptions, can you help optimize them?"
 
 Claude: [Automatically activates SEO WordPress Manager skill]
-        "I'll help you batch-update your Rank Math SEO metadata. Let me first
-        fetch your posts via GraphQL and show you a preview of the changes..."
+        "I'll help you batch-update your Rank Math SEO metadata for products. Let me first
+        fetch your products via GraphQL and show you a preview of the changes..."
 ```
 
 ## Quick Start
 
-### Installation (2 minutes)
+### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/dragosroua/claude-content-skills.git
-cd claude-content-skills
+git clone https://github.com/your-repo/claude-wpseo-skills.git
+cd claude-wpseo-skills
 
 # Install Python dependencies
 pip install -r requirements.txt
@@ -78,79 +60,50 @@ cp -r shared ~/.claude/skills/
 ### Configuration
 
 ```bash
-# Copy example configs
+# Copy example config
 cp .env.example .env
 
-# Edit with your credentials (only needed for skills you use)
-# - WordPress GraphQL URL and Application Password (SEO WordPress Manager)
-# - Content path for your Astro site (CTA Injector)
-# - Dist folder path for built site (Link Analyzer - works on local files)
+# Edit with your WordPress credentials
+WP_GRAPHQL_URL=https://your-site.com/graphql
+WP_USERNAME=your-username
+WP_APP_PASSWORD=xxxx xxxx xxxx xxxx
 ```
-
-### Verify Installation
-
-Start Claude Code - the skills should now appear when relevant to your requests.
 
 ## Skills Overview
 
 ### 1. SEO WordPress Manager
 
-Batch update Rank Math SEO fields (titles, meta descriptions, focus keyphrases) via WordPress GraphQL API.
+Batch update Rank Math SEO fields (titles, meta descriptions, focus keyphrases) for posts and WooCommerce products via WordPress GraphQL API.
 
 **Key Features:**
+- Support for both **posts** and **WooCommerce products**
 - Preview changes before applying (dry-run by default)
 - Progress tracking with resume capability
 - Batch processing with rate limiting
 - Backup of original values
+- SEO score tracking
 
 **Requirements:**
-- WordPress with WPGraphQL plugin
-- Rank Math SEO + WPGraphQL Rank Math extension
+- WordPress 6.0+ with WPGraphQL plugin
+- Rank Math SEO + WPGraphQL for Rank Math extension
+- WPGraphQL WooCommerce (for product support)
 - Application Password for authentication
 
 **Example Usage:**
 ```
-"Update meta descriptions for all posts in the tutorials category"
+"Update meta descriptions for all products in the electronics category"
 "Fix SEO titles that are too long"
 "Add focus keyphrases to posts missing them"
+"Analyze SEO scores for all WooCommerce products"
 ```
 
 [Full Documentation](docs/skills/SEO_WORDPRESS_MANAGER.md)
 
 ---
 
-### 2. Astro CTA Injector
+### 2. Link Analyzer
 
-Inject Call-to-Action blocks into Astro site content with intelligent placement and relevance scoring.
-
-**Key Features:**
-- Multiple placement strategies (end, after 50%, after 60%, after heading)
-- Content-based relevance scoring
-- Template system for CTA HTML
-- Backup and rollback capability
-
-**Placement Strategies:**
-| Strategy | Best For |
-|----------|----------|
-| `end` | Non-intrusive, general CTAs |
-| `after-paragraph-50%` | Newsletter signups (highest conversion) |
-| `after-paragraph-60%` | Product recommendations |
-| `after-heading` | Important announcements |
-
-**Example Usage:**
-```
-"Add newsletter CTAs to my productivity articles"
-"Inject product promotion into posts scoring above 7"
-"Preview CTA placements before applying"
-```
-
-[Full Documentation](docs/skills/ASTRO_CTA_INJECTOR.md)
-
----
-
-### 3. Link Analyzer
-
-Comprehensive link analysis for static sites - find broken links, orphan pages, and internal linking issues.
+Comprehensive link analysis for WordPress sites - find broken links, orphan pages, and internal linking issues.
 
 **Key Features:**
 - Internal/external link extraction and validation
@@ -173,20 +126,80 @@ Comprehensive link analysis for static sites - find broken links, orphan pages, 
 
 ---
 
+## WordPress Setup
+
+### Required Plugins
+
+| Plugin | Purpose | Download |
+|--------|---------|----------|
+| WPGraphQL | GraphQL API for WordPress | [wordpress.org](https://wordpress.org/plugins/wp-graphql/) |
+| Rank Math SEO | SEO plugin | [wordpress.org](https://wordpress.org/plugins/seo-by-rank-math/) |
+| WPGraphQL for Rank Math | GraphQL + Rank Math integration | [GitHub](https://github.com/AxeWP/wp-graphql-rank-math) |
+| WPGraphQL WooCommerce | GraphQL + WooCommerce | [GitHub](https://github.com/wp-graphql/wp-graphql-woocommerce) |
+
+### Enable Mutations
+
+Add to your theme's `functions.php`:
+
+```php
+add_action('graphql_register_types', function() {
+    register_graphql_mutation('updatePostSeo', [
+        'inputFields' => [
+            'postId' => ['type' => 'Int'],
+            'title' => ['type' => 'String'],
+            'description' => ['type' => 'String'],
+            'focusKeyword' => ['type' => 'String'],
+        ],
+        'outputFields' => [
+            'success' => ['type' => 'Boolean'],
+            'post' => ['type' => 'Post'],
+        ],
+        'mutateAndGetPayload' => function($input) {
+            $post_id = absint($input['postId']);
+
+            if (!current_user_can('edit_post', $post_id)) {
+                throw new \GraphQL\Error\UserError('Permission denied');
+            }
+
+            if (isset($input['title'])) {
+                update_post_meta($post_id, 'rank_math_title',
+                    sanitize_text_field($input['title']));
+            }
+            if (isset($input['description'])) {
+                update_post_meta($post_id, 'rank_math_description',
+                    sanitize_textarea_field($input['description']));
+            }
+            if (isset($input['focusKeyword'])) {
+                update_post_meta($post_id, 'rank_math_focus_keyword',
+                    sanitize_text_field($input['focusKeyword']));
+            }
+
+            return ['success' => true, 'post' => get_post($post_id)];
+        }
+    ]);
+});
+```
+
+### Create Application Password
+
+1. WordPress Admin → Users → Your Profile
+2. Scroll to "Application Passwords"
+3. Name: "Claude SEO Manager"
+4. Click "Add New Application Password"
+5. Copy the generated password (shown once!)
+
 ## Repository Structure
 
 ```
-claude-content-skills/
+claude-wpseo-skills/
 ├── README.md                    # You are here
 ├── LICENSE                      # MIT License
 ├── requirements.txt             # Python dependencies
 ├── .env.example                 # Environment template
 │
 ├── docs/                        # Documentation
-│   ├── README.md               # Documentation index
 │   ├── skills/                 # Per-skill deep dives
-│   ├── integration/            # Setup and troubleshooting
-│   └── philosophy/             # Design decisions
+│   └── integration/            # Setup and troubleshooting
 │
 ├── shared/                      # Shared utilities
 │   ├── config_loader.py        # Configuration management
@@ -194,36 +207,23 @@ claude-content-skills/
 │
 └── skills/                      # The skills themselves
     ├── seo-wordpress-manager/
-    │   ├── SKILL.md            # Skill definition (required)
-    │   ├── reference.md        # Detailed reference
+    │   ├── SKILL.md            # Skill definition
+    │   ├── reference.md        # Rank Math fields reference
     │   ├── config.example.json
     │   └── scripts/
     │       ├── wp_graphql_client.py
+    │       ├── analyze_seo.py
     │       ├── preview_changes.py
     │       └── rankmath_batch_updater.py
-    │
-    ├── astro-cta-injector/
-    │   ├── SKILL.md
-    │   ├── reference.md
-    │   ├── config.example.json
-    │   ├── templates/
-    │   │   ├── newsletter.html
-    │   │   └── product.html
-    │   └── scripts/
-    │       ├── score_posts.py
-    │       ├── preview_injection.py
-    │       └── inject_ctas.py
     │
     └── link-analyzer/
         ├── SKILL.md
         ├── reference.md
-        ├── config.example.json
         └── scripts/
-            ├── analyze.py          # Main orchestrator
+            ├── analyze.py
             ├── outbound_links.py
             ├── internal_links.py
-            ├── http_checker.py
-            └── link_graph.py       # Orphans, sinks, metrics
+            └── link_graph.py
 ```
 
 ## Requirements
@@ -232,59 +232,20 @@ claude-content-skills/
 |-------------|---------|-------|
 | Python | 3.10+ | For running analysis scripts |
 | Claude Code | Latest | CLI tool from Anthropic |
-| WordPress | 5.0+ | With WPGraphQL (for SEO skill) |
-| Rank Math SEO | Latest | With GraphQL extension (for SEO skill) |
+| WordPress | 6.0+ | With WPGraphQL |
+| Rank Math SEO | 1.0.201+ | With WPGraphQL extension |
+| WooCommerce | Latest | Optional, for product SEO |
 
-## How Skills Work
+## Rank Math SEO Meta Keys
 
-Each skill has a `SKILL.md` file with YAML frontmatter that tells Claude:
-
-```yaml
----
-name: link-analyzer
-description: Comprehensive link analysis for static sites. Use when the user
-  wants to analyze links, find broken links, identify orphan pages...
----
-```
-
-Claude reads these descriptions and automatically activates the skill when your request matches. The skill's documentation and scripts then guide Claude's responses.
-
-## Contributing
-
-Contributions welcome! Areas of interest:
-
-- [ ] Additional CTA placement strategies
-- [ ] More link graph visualizations
-- [ ] WordPress REST API alternative to GraphQL
-- [ ] Support for other static site generators (Hugo, Jekyll)
-
-## Related Projects
-
-- **[ADD Framework Mega-Prompt](https://github.com/dragosroua/claude-assess-decide-do-mega-prompt)** - The cognitive framework used to develop these skills
-- **[addTaskManager](https://addtaskmanager.com)** - iOS/macOS productivity app built on ADD principles
-
-## Author
-
-**Dragos Roua**
-
-- Blog: [dragosroua.com](https://dragosroua.com)
-- GitHub: [@dragosroua](https://github.com/dragosroua)
-- Twitter: [@dragosroua](https://twitter.com/dragosroua)
-
-## Support
-
-If these skills save you time, consider:
-
-- Starring the repository
-- [Sponsoring on GitHub](https://github.com/sponsors/dragosroua)
-- Sharing with others who manage content at scale
+| Field | Meta Key |
+|-------|----------|
+| SEO Title | `rank_math_title` |
+| Meta Description | `rank_math_description` |
+| Focus Keyword | `rank_math_focus_keyword` |
+| Canonical URL | `rank_math_canonical_url` |
+| Robots | `rank_math_robots` |
 
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
-
----
-
-<p align="center">
-  <sub>Built with cognitive alignment using the <a href="https://github.com/dragosroua/claude-assess-decide-do-mega-prompt">ADD Framework</a></sub>
-</p>

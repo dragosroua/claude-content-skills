@@ -112,10 +112,10 @@ def analyze_posts(
 
         issues = []
 
-        # Analyze each field - Rank Math uses 'description' and 'focusKw'
+        # Analyze each field - Rank Math uses 'description' and 'focusKeywords'
         title_issues = analyze_title(
             seo.get("title", ""),
-            post.get("title", "")
+            post.get("title", post.get("name", ""))  # Support both posts and products
         )
         issues.extend(title_issues)
 
@@ -126,7 +126,11 @@ def analyze_posts(
         issues.extend(desc_issues)
 
         if check_keyphrase:
-            kw_issues = analyze_keyphrase(seo.get("focusKw", ""))
+            # focusKeywords can be a string or array depending on Rank Math version
+            focus_kw = seo.get("focusKeywords", "")
+            if isinstance(focus_kw, list):
+                focus_kw = ", ".join(focus_kw) if focus_kw else ""
+            kw_issues = analyze_keyphrase(focus_kw)
             issues.extend(kw_issues)
 
         # Only include posts with issues
@@ -141,14 +145,19 @@ def analyze_posts(
                 text = re.sub(r'<[^>]+>', '', post["content"])
                 excerpt = text[:300].strip()
 
+            # Get focus keywords (can be string or list)
+            focus_kw = seo.get("focusKeywords", "")
+            if isinstance(focus_kw, list):
+                focus_kw = ", ".join(focus_kw) if focus_kw else ""
+
             results.append(SEOIssue(
                 post_id=post.get("databaseId", 0),
-                post_title=post.get("title", ""),
+                post_title=post.get("title", post.get("name", "")),  # Support products
                 post_url=post.get("uri", ""),
                 post_excerpt=excerpt,
                 current_seo_title=seo.get("title", ""),
                 current_meta_desc=seo.get("description", ""),
-                current_focus_keyphrase=seo.get("focusKw", ""),
+                current_focus_keyphrase=focus_kw,
                 issues=issues,
                 priority=determine_priority(issues)
             ))

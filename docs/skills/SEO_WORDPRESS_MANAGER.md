@@ -1,14 +1,16 @@
 # SEO WordPress Manager
 
-Batch update Rank Math SEO metadata via WordPress GraphQL API.
+Batch update Rank Math SEO metadata for WordPress posts and WooCommerce products via GraphQL API.
 
 ## Overview
 
-This skill connects to your WordPress site via WPGraphQL and enables batch updates of:
+This skill connects to your WordPress/WooCommerce site via WPGraphQL and enables batch updates of:
 - SEO titles
 - Meta descriptions
 - Focus keyphrases
 - Open Graph metadata
+
+**Fully compatible with WooCommerce, Shoptimizer theme, and CommerceKit.**
 
 ## Prerequisites
 
@@ -25,18 +27,21 @@ This skill connects to your WordPress site via WPGraphQL and enables batch updat
    ```
 
 3. **Install WPGraphQL for Rank Math SEO**
-   - Download from: https://github.com/developer-developer/wpgraphql-rank-math
-   - Or search "WPGraphQL Rank Math" in plugins
+   - Download from: https://github.com/AxeWP/wp-graphql-rank-math
+   - Or via Composer: `composer require axepress/wp-graphql-rank-math`
 
-4. **Enable Mutations** (add to `functions.php`):
+4. **Install WPGraphQL WooCommerce** (for product support)
+   - Download from: https://github.com/wp-graphql/wp-graphql-woocommerce
+
+5. **Enable Mutations** (add to `functions.php`):
    ```php
-   // See skills/seo-wordpress-manager/reference.md for full code
+   // See skills/seo-wordpress-manager/SKILL.md for full code
    add_action('graphql_register_types', function() {
        register_graphql_mutation('updatePostSeo', [...]);
    });
    ```
 
-5. **Create Application Password**
+6. **Create Application Password**
    - Users → Your Profile → Application Passwords
    - Name: "Claude SEO Manager"
    - Copy the generated password
@@ -74,19 +79,19 @@ Simply describe what you want:
 
 ```
 "Update meta descriptions for posts in the tutorials category"
-"Find posts with SEO titles over 60 characters and fix them"
-"Add focus keyphrases to posts that are missing them"
+"Fix SEO titles that are too long for WooCommerce products"
+"Add focus keyphrases to products that are missing them"
+"Analyze SEO scores for all products in electronics category"
 ```
 
 Claude will:
-1. Run `analyze_seo.py` to fetch posts and identify SEO issues
-2. Analyze each post's content and current SEO data
+1. Fetch posts/products and identify SEO issues
+2. Analyze content and current SEO data
 3. Generate optimized titles, descriptions, and keyphrases
-4. Create a `changes.json` file with the improvements
-5. Show you a preview of changes (before/after comparison)
-6. Ask for confirmation
-7. Apply changes in batches with progress tracking
-8. Report results with success/failure counts
+4. Show you a preview of changes (before/after comparison)
+5. Ask for confirmation
+6. Apply changes in batches with progress tracking
+7. Report results with success/failure counts
 
 ### Via Scripts (Direct)
 
@@ -99,6 +104,12 @@ python scripts/analyze_seo.py --all --output analysis.json
 
 # Analyze a specific category
 python scripts/analyze_seo.py --category tutorials --output analysis.json
+
+# Fetch WooCommerce products
+python scripts/wp_graphql_client.py --action products --all --output products.json
+
+# Fetch products by category
+python scripts/wp_graphql_client.py --action products --category electronics --output products.json
 
 # Check focus keyphrases too
 python scripts/analyze_seo.py --all --check-keyphrase --output analysis.json
@@ -113,7 +124,7 @@ python scripts/rankmath_batch_updater.py --input changes.json
 python scripts/rankmath_batch_updater.py --input changes.json --apply
 
 # Resume interrupted batch
-python scripts/rankmath_batch_updater.py --resume
+python scripts/rankmath_batch_updater.py --resume --input changes.json
 ```
 
 ### The Workflow
@@ -121,13 +132,13 @@ python scripts/rankmath_batch_updater.py --resume
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  1. ANALYZE                                                      │
-│     analyze_seo.py → analysis.json                              │
+│     analyze_seo.py or wp_graphql_client.py --action products    │
 │     (identifies issues: missing, too long, generic, etc.)       │
 └────────────────────────────┬────────────────────────────────────┘
                              ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │  2. GENERATE (Claude)                                           │
-│     Reads analysis.json → generates changes.json                │
+│     Reads analysis → generates changes.json                     │
 │     (optimized titles, descriptions, keyphrases)                │
 └────────────────────────────┬────────────────────────────────────┘
                              ▼
@@ -153,7 +164,7 @@ The batch updater expects a JSON file with this structure:
   "updates": [
     {
       "post_id": 123,
-      "post_title": "Original Post Title",
+      "post_title": "Original Post or Product Title",
       "current": {
         "seo_title": "Old Title | Site Name",
         "meta_desc": "Old description",
@@ -188,14 +199,20 @@ The batch updater expects a JSON file with this structure:
 
 ### Meta Description
 - **Length**: 150-160 characters
-- **Include CTA**: "Learn", "Discover", "Get"
+- **Include CTA**: "Learn", "Discover", "Get", "Shop Now"
 - **Include keyword**: Natural placement
 - **Unique**: Every page needs a different description
 
 ### Focus Keyphrase
-- One primary keyword per post
+- One primary keyword per post/product
 - Long-tail keywords often perform better
 - Match search intent
+
+### WooCommerce Product SEO
+- Include product attributes in title (size, color, brand)
+- Add pricing/value proposition in meta description
+- Use product-specific schema markup
+- Optimize category pages separately
 
 ## Troubleshooting
 
@@ -215,6 +232,21 @@ The batch updater expects a JSON file with this structure:
 - Increase `delay_seconds` in config
 - Reduce `batch.size`
 - Check server resources
+
+### Products not showing
+- Install WPGraphQL WooCommerce plugin
+- Verify products are published
+- Check product visibility settings
+
+## Rank Math Meta Keys
+
+| Field | Meta Key |
+|-------|----------|
+| SEO Title | `rank_math_title` |
+| Meta Description | `rank_math_description` |
+| Focus Keyword | `rank_math_focus_keyword` |
+| Canonical URL | `rank_math_canonical_url` |
+| Robots | `rank_math_robots` |
 
 ## Related Files
 

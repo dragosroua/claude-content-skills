@@ -2,6 +2,7 @@
 """
 WordPress GraphQL Client for SEO operations
 Handles authentication and API communication with Rank Math SEO
+Compatible with WordPress, WooCommerce, and custom post types
 """
 
 import os
@@ -35,7 +36,7 @@ class WPCredentials:
 
 
 class WPGraphQLClient:
-    """WordPress GraphQL API client"""
+    """WordPress GraphQL API client for Rank Math SEO"""
 
     def __init__(self, credentials: WPCredentials):
         self.credentials = credentials
@@ -74,7 +75,7 @@ class WPGraphQLClient:
         after: Optional[str] = None,
         category: Optional[str] = None
     ) -> dict[str, Any]:
-        """Fetch posts with their SEO metadata from Rank Math"""
+        """Fetch posts with their Rank Math SEO metadata"""
 
         if category:
             query = """
@@ -94,11 +95,17 @@ class WPGraphQLClient:
                         seo {
                             title
                             description
-                            focusKw
+                            focusKeywords
                             canonicalUrl
+                            robots
+                            breadcrumbTitle
                             openGraph {
                                 title
                                 description
+                            }
+                            seoScore {
+                                score
+                                rating
                             }
                         }
                     }
@@ -124,11 +131,112 @@ class WPGraphQLClient:
                         seo {
                             title
                             description
-                            focusKw
+                            focusKeywords
                             canonicalUrl
+                            robots
+                            breadcrumbTitle
                             openGraph {
                                 title
                                 description
+                            }
+                            seoScore {
+                                score
+                                rating
+                            }
+                        }
+                    }
+                }
+            }
+            """
+            variables = {"first": limit, "after": after}
+
+        return self.execute(query, variables)
+
+    def get_products_with_seo(
+        self,
+        limit: int = 100,
+        after: Optional[str] = None,
+        category: Optional[str] = None
+    ) -> dict[str, Any]:
+        """Fetch WooCommerce products with their Rank Math SEO metadata"""
+
+        if category:
+            query = """
+            query GetProductsByCategory($first: Int!, $categorySlug: String!) {
+                products(first: $first, where: {category: $categorySlug, status: "publish"}) {
+                    pageInfo {
+                        hasNextPage
+                        endCursor
+                    }
+                    nodes {
+                        databaseId
+                        name
+                        slug
+                        uri
+                        ... on SimpleProduct {
+                            price
+                            regularPrice
+                        }
+                        ... on VariableProduct {
+                            price
+                            regularPrice
+                        }
+                        seo {
+                            title
+                            description
+                            focusKeywords
+                            canonicalUrl
+                            robots
+                            breadcrumbTitle
+                            openGraph {
+                                title
+                                description
+                            }
+                            seoScore {
+                                score
+                                rating
+                            }
+                        }
+                    }
+                }
+            }
+            """
+            variables = {"first": limit, "categorySlug": category}
+        else:
+            query = """
+            query GetProductsWithSEO($first: Int!, $after: String) {
+                products(first: $first, after: $after, where: {status: "publish"}) {
+                    pageInfo {
+                        hasNextPage
+                        endCursor
+                    }
+                    nodes {
+                        databaseId
+                        name
+                        slug
+                        uri
+                        ... on SimpleProduct {
+                            price
+                            regularPrice
+                        }
+                        ... on VariableProduct {
+                            price
+                            regularPrice
+                        }
+                        seo {
+                            title
+                            description
+                            focusKeywords
+                            canonicalUrl
+                            robots
+                            breadcrumbTitle
+                            openGraph {
+                                title
+                                description
+                            }
+                            seoScore {
+                                score
+                                rating
                             }
                         }
                     }
@@ -160,6 +268,27 @@ class WPGraphQLClient:
 
         return all_posts
 
+    def get_all_products_with_seo(self, category: Optional[str] = None) -> list[dict]:
+        """Fetch all WooCommerce products with pagination"""
+        all_products = []
+        after = None
+        has_next = True
+
+        while has_next:
+            result = self.get_products_with_seo(limit=100, after=after, category=category)
+            products_data = result.get("products", {})
+
+            nodes = products_data.get("nodes", [])
+            all_products.extend(nodes)
+
+            page_info = products_data.get("pageInfo", {})
+            has_next = page_info.get("hasNextPage", False)
+            after = page_info.get("endCursor")
+
+            print(f"Fetched {len(all_products)} products...", file=sys.stderr)
+
+        return all_products
+
     def update_post_seo(
         self,
         post_id: int,
@@ -167,7 +296,7 @@ class WPGraphQLClient:
         meta_desc: Optional[str] = None,
         focus_keyphrase: Optional[str] = None
     ) -> dict[str, Any]:
-        """Update Rank Math SEO fields for a post"""
+        """Update Rank Math SEO fields for a post or product"""
 
         mutation = """
         mutation UpdatePostSEO($postId: Int!, $title: String, $description: String, $focusKeyword: String) {
@@ -210,11 +339,11 @@ def load_credentials_from_config(config_path: Optional[Path] = None) -> WPCreden
 
 def main():
     parser = argparse.ArgumentParser(description="WordPress GraphQL Client for Rank Math SEO")
-    parser.add_argument("--action", choices=["list", "get", "test"], default="list",
+    parser.add_argument("--action", choices=["list", "get", "test", "products"], default="list",
                         help="Action to perform")
-    parser.add_argument("--limit", type=int, default=10, help="Number of posts to fetch")
+    parser.add_argument("--limit", type=int, default=10, help="Number of items to fetch")
     parser.add_argument("--category", type=str, help="Filter by category slug")
-    parser.add_argument("--all", action="store_true", help="Fetch all posts (paginated)")
+    parser.add_argument("--all", action="store_true", help="Fetch all items (paginated)")
     parser.add_argument("--output", type=str, help="Output file path")
     parser.add_argument("--config", type=str, help="Path to config.json")
 
@@ -261,6 +390,22 @@ def main():
             with open(args.output, "w", encoding="utf-8") as f:
                 json.dump(output_data, f, indent=2, ensure_ascii=False)
             print(f"Saved {len(posts)} posts to {args.output}")
+        else:
+            print(json.dumps(output_data, indent=2, ensure_ascii=False))
+
+    elif args.action == "products":
+        if args.all:
+            products = client.get_all_products_with_seo(category=args.category)
+        else:
+            result = client.get_products_with_seo(limit=args.limit, category=args.category)
+            products = result.get("products", {}).get("nodes", [])
+
+        output_data = {"products": products, "count": len(products)}
+
+        if args.output:
+            with open(args.output, "w", encoding="utf-8") as f:
+                json.dump(output_data, f, indent=2, ensure_ascii=False)
+            print(f"Saved {len(products)} products to {args.output}")
         else:
             print(json.dumps(output_data, indent=2, ensure_ascii=False))
 
