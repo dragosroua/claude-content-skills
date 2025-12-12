@@ -36,13 +36,14 @@
 
 ## What This Is
 
-A collection of **three production-ready Claude Code skills** that automate / enhance common content management tasks:
+A collection of **four production-ready Claude Code skills** that automate / enhance common content management tasks:
 
 | Skill | Purpose | Time Saved |
 |-------|---------|------------|
 | **SEO WordPress Manager** | Batch update Yoast SEO metadata via GraphQL | Hours per week |
 | **Astro CTA Injector** | Intelligently inject CTAs into static site content | Manual work eliminated |
 | **Link Analyzer** | Find broken links, orphan pages, and linking issues | Comprehensive site audits |
+| **GSC Assistant** | Track indexing status, manage submissions, process false positives | Indexing workflow streamlined |
 
 These aren't toy examples. They emerged from real-world needs managing a 15+ years old, 1,300+ posts blog migration and optimization project.
 
@@ -173,6 +174,34 @@ Comprehensive link analysis for static sites - find broken links, orphan pages, 
 
 ---
 
+### 4. GSC Assistant
+
+Track Google Search Console indexing status, manage submission workflows, and process false positives.
+
+**Key Features:**
+- Compare sitemap against GSC indexed pages export
+- Track two index states: Public (GSC export) and Lag (URL Inspection confirmed)
+- Prioritize pages for submission by category
+- Process false positives (move to indexed when confirmed)
+- Track submission dates and progress
+
+**Tracking Files:**
+| File | Purpose |
+|------|---------|
+| `indexed.md` | All indexed pages (Public + Lag tables) |
+| `to-index.md` | Pages awaiting indexing, prioritized |
+
+**Example Usage:**
+```
+"Compare my sitemap with GSC export and generate tracking files"
+"Process false positives and update indexed list"
+"Show indexing progress statistics"
+```
+
+[Full Documentation](docs/skills/GSC_ASSISTANT.md)
+
+---
+
 ## Repository Structure
 
 ```
@@ -214,16 +243,19 @@ claude-content-skills/
     │       ├── preview_injection.py
     │       └── inject_ctas.py
     │
-    └── link-analyzer/
-        ├── SKILL.md
-        ├── reference.md
-        ├── config.example.json
-        └── scripts/
-            ├── analyze.py          # Main orchestrator
-            ├── outbound_links.py
-            ├── internal_links.py
-            ├── http_checker.py
-            └── link_graph.py       # Orphans, sinks, metrics
+    ├── link-analyzer/
+    │   ├── SKILL.md
+    │   ├── reference.md
+    │   ├── config.example.json
+    │   └── scripts/
+    │       ├── analyze.py          # Main orchestrator
+    │       ├── outbound_links.py
+    │       ├── internal_links.py
+    │       ├── http_checker.py
+    │       └── link_graph.py       # Orphans, sinks, metrics
+    │
+    └── gsc-assistant/
+        └── SKILL.md                # Skill definition
 ```
 
 ## Requirements
