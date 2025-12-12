@@ -36,7 +36,7 @@
 
 ## What This Is
 
-A collection of **four production-ready Claude Code skills** that automate / enhance common content management tasks:
+A collection of **five production-ready Claude Code skills** that automate / enhance common content management tasks:
 
 | Skill | Purpose | Time Saved |
 |-------|---------|------------|
@@ -44,6 +44,7 @@ A collection of **four production-ready Claude Code skills** that automate / enh
 | **Astro CTA Injector** | Intelligently inject CTAs into static site content | Manual work eliminated |
 | **Link Analyzer** | Find broken links, orphan pages, and linking issues | Comprehensive site audits |
 | **GSC Assistant** | Track indexing status, manage submissions, process false positives | Indexing workflow streamlined |
+| **Pre-publish Post Assistant** | Classify posts with categories/tags, generate SEO metadata | Pre-publish workflow optimized |
 
 These aren't toy examples. They emerged from real-world needs managing a 15+ years old, 1,300+ posts blog migration and optimization project.
 
@@ -202,6 +203,36 @@ Track Google Search Console indexing status, manage submission workflows, and pr
 
 ---
 
+### 5. Pre-publish Post Assistant
+
+Intelligent pre-publish assistant for new blog posts. Suggests categories, tags, and SEO metadata with transparent rationale.
+
+**Key Features:**
+- Suggest categories from existing taxonomy (1-2 max)
+- Suggest tags from existing tags (3-5 max, no pollution)
+- Generate SEO title, meta description, focus keyphrase
+- Show rationale for every suggestion
+- Distribution-aware (avoids oversized categories, orphan tags)
+
+**Best Practices Enforced:**
+| Practice | Description |
+|----------|-------------|
+| No tag pollution | Only suggests existing tags with 3+ posts |
+| Balanced distribution | Warns if category would become oversized |
+| SEO compliance | Enforces character limits (60/160) |
+| Transparent reasoning | Every suggestion includes rationale |
+
+**Example Usage:**
+```
+"Classify this post: /drafts/morning-routine.md"
+"What tags should I use for a post about Bitcoin ETFs?"
+"Generate SEO metadata for my productivity article"
+```
+
+[Full Documentation](docs/skills/PRE_PUBLISH_POST_ASSISTANT.md)
+
+---
+
 ## Repository Structure
 
 ```
@@ -254,7 +285,10 @@ claude-content-skills/
     │       ├── http_checker.py
     │       └── link_graph.py       # Orphans, sinks, metrics
     │
-    └── gsc-assistant/
+    ├── gsc-assistant/
+    │   └── SKILL.md                # Skill definition
+    │
+    └── pre-publish-post-assistant/
         └── SKILL.md                # Skill definition
 ```
 
